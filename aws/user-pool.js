@@ -151,6 +151,7 @@ class UserPool {
                 this.enableMFA(onFailure)
             }*/
 
+
             if (typeof onSuccess == 'function') {
                 return onSuccess()
             }
@@ -217,6 +218,13 @@ class UserPool {
             Username: username,
             Password: password
         }
+        const refreshCallback = (err) => {
+            if (err) {
+                logger.log(err)
+            } else {
+                logger.log('Cognito credential has been successfully refreshed !')
+            }
+        }
 
         let authenticationDetails = new CognitoIdentityServiceProvider.AuthenticationDetails(authenticationData)
         var onSuccess = (result) => {
@@ -228,6 +236,9 @@ class UserPool {
                     ['cognito-idp.' + ENV_VARS.COGNITO_REGION + '.amazonaws.com/' + ENV_VARS.COGNITO_USER_POOL_ID]: result.getIdToken().getJwtToken()
                 }
             })
+            
+            //call refresh method in order to authenticate user and get new temp credentials
+            AWS.config.credentials.refresh(refreshCallback)
 
             if (typeof conSuccess == 'function') {
                 return conSuccess()
