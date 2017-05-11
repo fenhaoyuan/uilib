@@ -10,7 +10,9 @@
 let PRO_ENV = require('../config/production.js')
 let ENV_VARS = PRO_ENV.ENV
 
-switch (process.env.NODE_ENV) {
+const env = process.env.BUILD_STAGE || process.env.NODE_ENV
+
+switch (env) {
     case 'staging':
         //override with staging config
         let STG_ENV = require('../config/staging.js')
