@@ -1,5 +1,6 @@
 import { Component, PropTypes } from 'react'
 import S3 from 'aws-sdk/clients/s3'
+import uuid from 'uuid/v4'
 
 import ENV_VARS from '../../env-vars'
 import logger from '../../logger'
@@ -122,9 +123,8 @@ class S3Manager extends Component {
 
     createFile = (file, dirName, onFailure, onSuccess) => {
         let params = {
-            Key: `${encodeURIComponent(dirName)}${Date.now()}___${file.name}`,
+            Key: `${this.s3.config.credentials.identityId}/${dirName.length !== 0 ? `${encodeURIComponent(dirName)}/` : ''}${uuid()}___${file.name}`,
             Body: file,
-            ACL: ENV_VARS.S3[this.props.bucketName].acl,
             ContentType: file.type
         }
 
